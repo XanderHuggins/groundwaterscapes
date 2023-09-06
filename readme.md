@@ -23,7 +23,8 @@ xanderhuggins@uvic.ca
 <br/>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/XanderHuggins/groundwatersheds-for-PAs/main/assets/00_archetype_main_figure.png" 
+  <img src="https://raw.githubusercontent.com/XanderHuggins/gcs-archetypes/master/assets/00_archetype_main_figure.png" 
   width="100%"/>
 </p>
 <br/> 
+
