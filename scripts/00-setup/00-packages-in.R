@@ -1,0 +1,66 @@
+# Name: packages-in.R
+# Description: Import packages
+
+# general
+library(tidyverse)
+library(magrittr)
+library(collapse)
+
+# stats / clustering
+library(Hmisc)
+library(fpc)
+library(NbClust)
+library(clValid)
+library(clv)
+library(kohonen)
+library(mclust)
+library(factoextra)
+library(parameters)
+library(reldist)
+library(BAMMtools)
+library(classInt)
+library(parallelDist)
+library(distances)
+library(Rfast)
+library(pdist)
+library(overlapping)
+library(corrplot)
+library(GGally)
+library(cluster)
+library(aweSOM)
+library(parallel)
+library(doParallel)
+
+# spatial
+library(raster) 
+library(terra) 
+library(sf)
+library(ncdf4)
+library(rasterDT)
+library(rgeos)
+library(rgdal)
+library(gdalUtilities)
+library(whitebox)
+library(rasterDT)
+library(elsa)
+library(rasterdiv)
+library(landscapemetrics)
+library(rnaturalearthhires)
+
+# plotting
+library(scico) 
+library(MetBrewer)
+library(viridisLite)
+library(RColorBrewer)
+library(scales)
+library(ggridges)
+library(cowplot)
+library(gridExtra)
+library(ggcorrplot)
+library(ggalluvial)
+library(fmsb)
+
+# spatial plotting
+library(rnaturalearth)
+library(tmaptools)
+library(tmap)
