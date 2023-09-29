@@ -19,9 +19,8 @@ data_stack = c(
 complete_coverage = rast(here("data/complete_coverage.tif"))
 data_stack[complete_coverage == 0] = NA
 
-################################-
+## --------------------------- \
 # Earth system classifications
-################################-
 
 # 1/ water table ratio
 # data_stack[[1]][data_stack[[1]] == -9] = 
@@ -54,12 +53,12 @@ por_class = terra::classify(x = data_stack[[2]], rcl = rcl.m, include.lowest = T
 plot(por_class)
 
 earth_matrix = (10*wtr_class) + por_class
-earth_matrix[] |> unique() |> length()
 plot(earth_matrix)
+earth_matrix[] |> unique() |> length()
 
-################################-
+## --------------------------- \
 # Ecosystem classifications
-################################-
+
 rcl.m = c(-Inf, 0.001, 1,
           0.001, 0.2, 2,
           0.2, 0.4, 3,
@@ -68,20 +67,22 @@ rcl.m = c(-Inf, 0.001, 1,
           0.8, Inf, 6) |> 
   matrix(ncol = 3, byrow = TRUE)
 
+# 3/ terrestrial GDEs
 gde_t_class = terra::classify(x = data_stack[[3]], rcl = rcl.m, include.lowest = TRUE)
-gde_a_class = terra::classify(x = data_stack[[4]], rcl = rcl.m, include.lowest = TRUE)
 plot(gde_t_class)
+
+# 4/ aquatic GDEs
+gde_a_class = terra::classify(x = data_stack[[4]], rcl = rcl.m, include.lowest = TRUE)
 plot(gde_a_class)
 
 gde_matrix = (10*gde_t_class) + gde_a_class
 plot(gde_matrix)
-
-# unique count
 gde_matrix[] |> unique() |> length()
 
-################################-
+
+## --------------------------- \
 # Food system classifications
-################################-
+
 plot(data_stack[[5]])
 
 rcl.m = c(-Inf, 0.5, 1,
@@ -92,6 +93,7 @@ rcl.m = c(-Inf, 0.5, 1,
           4.5, Inf, 6) |> 
   matrix(ncol = 3, byrow = TRUE)
 
+# 5/ field size
 fsize_class = terra::classify(x = data_stack[[5]], rcl = rcl.m, include.lowest = TRUE)
 plot(fsize_class)
 
@@ -103,18 +105,17 @@ rcl.m = c(-Inf, 0.001, 1,
           0.8, Inf, 6) |> 
   matrix(ncol = 3, byrow = TRUE)
 
+# 6/ area irrigated with groundwater
 aeigw_class = terra::classify(x = data_stack[[6]]/100, rcl = rcl.m, include.lowest = TRUE)
 plot(aeigw_class)
 
 foodsys_matrix = (10*aeigw_class) + fsize_class
 plot(foodsys_matrix)
-
-# unique count
 foodsys_matrix[] |> unique() |> length()
 
-################################-
+## --------------------------- \
 # Governance classifications
-################################-
+
 iwrm_rast = raster(here("data/input/iwrm-gw-layers.tif"))
 rcl.m = c(-Inf, 10, 1,
           10, 30, 2,
@@ -145,14 +146,14 @@ plot(gov_matrix)
 # unique count
 gov_matrix[] |> unique() |> length()
 
-################################-
+## --------------------------- \
 # Stack of sub-domain matrices
-################################-
+
 matrix_stack = c(earth_matrix, gde_matrix, foodsys_matrix, gov_matrix) |> 
   terra::mask(mask = terra::rast(here("data/earth_mask_5arcmin.tif")),
               maskvalues = c(0,2,3))
 
-# remove all below 60S
+# mask-out below 60 degrees South
 Sof60r = rast(x = rast(WGS84_areaRaster(5/60)), vals = 0)
 Sof60r[1800:2160,] = 1 # rows that correspond with areas south of 60S
 matrix_stack[Sof60r == 1] = NA
@@ -164,127 +165,27 @@ plot(matrix_stack[[5]])
 
 matrix_stack[[5]][is.na(matrix_stack[[1]]) | is.na(matrix_stack[[2]]) | is.na(matrix_stack[[3]]) | is.na(matrix_stack[[4]])] = NA
 
-# identify number of unique matrix combinations
-matrix_stack$all |> unique() |> nrow() # 79152 unique combinations... 
-
-# determine frequency of each combination
-freq_df = matrix_stack[[5]] |> as.vector() |> table() |> as.data.frame() 
-freq_df |> filter(Freq >= 1) |> nrow()
-freq_df |> filter(Freq > 1) |> nrow()
-
+# write stack to file
 terra::writeRaster(x = matrix_stack, 
                    filename = here("data/matrix_stack.tif"),
                    overwrite = TRUE,
-                   wopt=list(datatype="FLT8S"))
+                   wopt=list(datatype="FLT8S")) # need this type to preserve all 8 digits in unique matrix ID, else trimmed to 6 sigfig
 
+## --------------------------- \
+# identify number of unique matrix combinations
+matrix_stack$all |> unique() |> nrow() # 79,177 unique combinations... 
+
+# sanity check that writing to file preserves complete ID 
 matrix_stack2 = rast(here("data/matrix_stack.tif"))
 matrix_stack2$all |> unique() |> nrow() # 79,177 unique combinations... 
 freq_df = matrix_stack2[[5]] |> as.vector() |> table() |> as.data.frame() 
 freq_df |> filter(Freq >= 1) |> nrow()
 freq_df |> filter(Freq > 1) |> nrow()
 
-################################-
-# Calculate area-distribution of sub-domains
-################################-
-area_r = rast(here("data/ggrid_5arcmin.tif"))
-matrix_stack = rast(here("data/unique_combinations_all_functions.tif"))
+## --------------------------- \
+## old scripts below -- ignore
 
-## earth
-earth_ar_dist = c(matrix_stack[[1]], area_r) |> 
-  as.data.frame() |> set_colnames(c('id', 'area')) |>  
-  group_by(id) |> 
-  summarise(
-    area = sum(area, na.rm = T)
-  ) |> 
-  drop_na() |> 
-  mutate(
-    area = round(100*area/sum(area), 1),
-    yval = trunc(id/10),
-    xval = id - (yval*10)
-  ) 
-
-earth_ar_dist |> #dplyr::filter(area>0.1) |> 
-  ggplot(aes(x = xval, y = yval, fill = area)) + 
-  geom_tile() +
-  scale_fill_gradientn(colours = met.brewer("Hokusai2", n = 20), limits = c(0,10), oob = scales::squish) +
-  theme_void() +
-  theme(legend.position = "None") 
-ggsave(plot = last_plot(),
-       file= here("plots/earth_matrix_area_distribution.png"), bg = "transparent",
-       dpi= 400, width = 5, height = 5, units = "cm")
-
-
-## eco
-eco_ar_dist = c(matrix_stack[[2]], area_r) |> 
-  as.data.frame() |> set_colnames(c('id', 'area')) |>  
-  group_by(id) |> 
-  summarise(
-    area = sum(area, na.rm = T)
-  ) |> 
-  drop_na() |> 
-  mutate(
-    area = round(100*area/sum(area), 1),
-    yval = trunc(id/10),
-    xval = id - (yval*10)
-  )
-
-eco_ar_dist |> # dplyr::filter(area>0.1) |> 
-  ggplot(aes(x = xval, y = yval, fill = area)) + 
-  geom_tile() +
-  scale_fill_gradientn(colours = met.brewer("Hokusai2", n = 20), limits = c(0,10), oob = scales::squish) +
-  theme_void() +
-  theme(legend.position = "None") 
-ggsave(plot = last_plot(),
-       file= here("plots/eco_matrix_area_distribution.png"), bg = "transparent",
-       dpi= 400, width = 5, height = 5, units = "cm")
-
-
-## food
-food_ar_dist = c(matrix_stack[[3]], area_r) |> 
-  as.data.frame() |> set_colnames(c('id', 'area')) |>  
-  group_by(id) |> 
-  summarise(
-    area = sum(area, na.rm = T)
-  ) |> 
-  drop_na() |> 
-  mutate(
-    yval = trunc(id/10),
-    xval = id - (yval*10)
-  ) |> 
-  dplyr::filter(xval > 1) |> 
-  mutate(
-    area = round(100*area/sum(area), 1),
-  )
-
-food_ar_dist |> # dplyr::filter(area>0.1) |> 
-  ggplot(aes(x = xval, y = yval, fill = area)) + 
-  geom_tile() +
-  scale_fill_gradientn(colours = met.brewer("Hokusai2", n = 20), limits = c(0,10), oob = scales::squish) +
-  theme_void() +
-  theme(legend.position = "None") + xlim(c(0.5,6.5)) 
-ggsave(plot = last_plot(),
-       file= here("plots/food_matrix_area_ag_fields_distribution.png"), bg = "transparent",
-       dpi= 400, width = 5, height = 5, units = "cm")
-
-## gov
-gov_ar_dist = c(matrix_stack[[4]], area_r) |> 
-  as.data.frame() |> set_colnames(c('id', 'area')) |>  
-  group_by(id) |> 
-  summarise(
-    area = sum(area, na.rm = T)
-  ) |> 
-  drop_na() |> 
-  mutate(
-    area = round(100*area/sum(area), 1),
-    yval = trunc(id/10),
-    xval = id - (yval*10)
-  )
-gov_ar_dist |> # dplyr::filter(area>0.1) |> 
-  ggplot(aes(x = xval, y = yval, fill = area)) + 
-  geom_tile() +
-  scale_fill_gradientn(colours = met.brewer("Hokusai2", n = 20), limits = c(0,10), oob = scales::squish) +
-  theme_void() +
-  theme(legend.position = "None")
-ggsave(plot = last_plot(),
-       file= here("plots/gov_matrix_area_distribution.png"), bg = "transparent",
-       dpi= 400, width = 5, height = 5, units = "cm")
+# # determine frequency of each combination
+# freq_df = matrix_stack[[5]] |> as.vector() |> table() |> as.data.frame() 
+# freq_df |> filter(Freq >= 1) |> nrow()
+# freq_df |> filter(Freq > 1) |> nrow()
