@@ -87,10 +87,10 @@ df$sizeperception = log(df$nrc)
 # plot(df$sizeperception ~ df$nrc)
 
 ## --------------------------- \
-# scale performance metrics by variance so each metric has same sd (sd = 1)
+# scale performance metrics so each has unit variance (equal contribution to additive performance metric)
 df$topo_scaled = df$topo / sd(df$topo)
 df$unex_scaled = df$unexv / sd(df$unexv)
-df$size_scaled = df$sizeperception / sd(df$sizeperception) #
+df$size_scaled = df$sizeperception / sd(df$sizeperception) 
 
 ## --------------------------- \
 # calculate performance metric of second-stage SOM 

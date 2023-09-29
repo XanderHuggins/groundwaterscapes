@@ -110,7 +110,7 @@ df$unexv = (100 - df$varra)/100
 # df |> group_by(nnode) |> summarise(k_l = median(k_l)) |> plot(k_l ~ nnode)
 
 ## --------------------------- \
-# scale performance metrics by variance so each metric has same sd (sd = 1)
+# scale performance metrics so each has unit variance (equal contribution to additive performance metric)
 df$topo_scaled = df$topo / sd(df$topo)
 df$unex_scaled = df$unexv / sd(df$unexv)
 
