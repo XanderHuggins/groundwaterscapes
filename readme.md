@@ -18,7 +18,7 @@ This repository contains all scripts necessary to preprocess input data and re-r
   -  `s02-01-som1-iterations-funnspace.R` is written to be run on a remote cluster using `SOM-iter-array-fullspace.sl`
 - `\scripts\2-analysis\a3-landscape-metrics`: landscape metric analysis of groundwaterscapes
 - `\scripts\2-analysis\a4-performance`: grid cell residual from groundwaterscape
-- [datasources.md](https://github.com/XanderHuggins/gcs-archetypes/blob/main/datasources.md) : documentation and web-links to all data used in this study.
+- [datasources.md](https://github.com/XanderHuggins/gcs-archetypes/blob/master/datasources.md) : documentation and web-links to all data used in this study.
 <br/>
 
 Additional scripts, such as plotting scripts, can be made available upon request. 
