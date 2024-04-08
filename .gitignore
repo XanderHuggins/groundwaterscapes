@@ -12052,3 +12052,9 @@ scripts/2-analysis/x-archived/a2-SOM-archetype-derivation/a2-4-archetype-orderin
 scripts/2-analysis/x-archived/a2-SOM-archetype-derivation/a2-3-second-stage-som.R
 scripts/2-analysis/x-archived/a2-SOM-archetype-derivation/a2-2-first-stage-som.R
 scripts/2-analysis/x-archived/a2-SOM-archetype-derivation/a2-1-sampling-som-input.R
+scripts/2-analysis/x-archived/a4-performance/a4-02-01-robustness-alternative-first-stage-soms.R
+scripts/2-analysis/x-archived/a4-performance/a4-02-02-best-performing-first-stage-soms.R
+scripts/2-analysis/x-archived/a4-performance/a4-02-03-alternative-second-stage-soms.R
+scripts/2-analysis/x-archived/a4-performance/a4-02-04-best-performing-second-stage-soms.R
+scripts/2-analysis/x-archived/a4-performance/a4-02-05-alternative-samples-archetype-mapping.R
+scripts/2-analysis/x-archived/a4-performance/a4-02-06-archetype_robustness_results.R
