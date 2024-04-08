@@ -2,20 +2,20 @@
 # determine how well each grid cell is represented by the 9 final archetypes
 
 # Import final archetypes map
-atypes = terra::rast(here("data/MAP_archetypes.tif"))
+atypes = terra::rast(here("data/groundwater-SYSTEM-archetypes_3x3_currentiter.tif"))
 
 # Import archetypes codebook vector
-cbv = readr::read_rds(here("data/som-iter/final-kohonen-objs/som2_archetypes_reclassed.rds"))
+cbv = readr::read_rds(here("data/som_files/som_selections/som2_selection.rds"))
 cbv = cbv$codes[[1]] |> as_tibble()
-cbv$ID = seq(1, 10)
+cbv$ID = seq(1, 18)
 
 # need to update the IDs based on reordered archetpyes 
-cbv = merge(x = cbv, y = readr::read_rds(here("data/archetype_reorder_matrix.rds")),
-            by.x = "ID", by.y = "from")
-cbv = cbv[order(cbv$to),]
-cbv$ID = cbv$to
-cbv$to= NULL
-cbv |> as_tibble()
+# cbv = merge(x = cbv, y = readr::read_rds(here("data/archetype_reorder_matrix.rds")),
+#             by.x = "ID", by.y = "from")
+# cbv = cbv[order(cbv$to),]
+# cbv$ID = cbv$to
+# cbv$to= NULL
+# cbv |> as_tibble()
 
 atype_wtr   = rasterDT::subsDT(x = raster(atypes), dict = data.frame(from = cbv$ID, to = cbv$wtr)) |> rast()
 atype_por   = rasterDT::subsDT(x = raster(atypes), dict = data.frame(from = cbv$ID, to = cbv$por)) |> rast()
@@ -43,16 +43,25 @@ dist_rast = sqrt(dist_rast)
 plot(dist_rast)
 
 # calculate sd and mean
-stat_df = c(dist_rast, rast(WGS84_areaRaster(5/60))) |> 
+stat_df = c(atypes, dist_rast, rast(WGS84_areaRaster(5/60))) |> 
   as.data.frame() |> 
-  set_colnames(c('resid', 'area')) |> 
+  set_colnames(c('id','resid', 'area')) |>
+  group_by(id) |> 
   summarise(
     sd = Hmisc::wtd.var(x = resid, weights = area, na.rm = T) |> sqrt(),
     mean = Hmisc::wtd.mean(x = resid, weights = area, na.rm = T)
   )
 stat_df
-
 dist_rast_z = (dist_rast - stat_df$mean) / stat_df$sd
+
+# appraoch that performs z score normalization per archetype
+dist_rast_z = rast(atypes)
+
+for (jj in 1:18) {
+  # jj = 1
+  dist_rast_z[atypes == jj] = (dist_rast[atypes == jj] - stat_df$mean[jj]) / stat_df$sd[jj]
+  
+}
 
 # plot world map of this residual
 outline = terra::vect(here("data/input/land_mask_polygon.sqlite")) |> st_as_sf()

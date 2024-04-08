@@ -48,6 +48,12 @@ terra::writeRaster(x = data_stack,
                    filename = here("data/input-data-stack-originalvals.tif"),
                    overwrite = TRUE)
 
+data_stack_df = rast(here("data/input-data-stack-originalvals.tif"))
+data_stack_df = data_stack_df |> as_tibble()
+hist(data_stack_df$udw)
+data_stack_df |> filter(wtr != -9) |> summary()
+readr::write_rds(x = data_stack_df, file = here("data/ds_df_full_originalvals.rds"))
+
 # create constant mask for project
 mask_proj = terra::rast(here("data/earth_mask_5arcmin.tif"))
 mask_proj[mask_proj != 1] = NA

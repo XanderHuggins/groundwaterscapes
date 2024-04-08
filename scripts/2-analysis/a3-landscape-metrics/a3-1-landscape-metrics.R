@@ -5,7 +5,7 @@
 # split this script into the individual analyses and print out results below each
 
 # Import raster of archetypes, area raster, and polygons of the whymap aquifers
-archs = terra::rast(here("data/MAP_archetypes.tif"))
+archs = terra::rast(here("data/groundwater-SYSTEM-archetypes_currentiter.tif"))
 whymap = terra::vect(here("data/input/major_aquifers_sorted.sqlite"))
 whymap_r = terra::rasterize(x = whymap, y = archs, field = "idalph", touches = TRUE) # rasterize ALPHebetized whymap order
 area = terra::rast(here("data/ggrid_5arcmin.tif"))
@@ -107,10 +107,10 @@ summary_df = data.frame(aquiferID = whymap$idalph,
                         arch_n = rep(NA),
                         archs = rep(NA))
 
-base_area_df = data.frame(arch = seq(1, 10))
+base_area_df = data.frame(arch = seq(1, 18))
 
 for (i in 1:nrow(res_df)) {
-  # i = 20
+  # i = 1
   
   area_temp_df = stack_df |> 
     filter(aquifer == i) |> 

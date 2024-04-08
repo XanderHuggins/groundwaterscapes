@@ -24,4 +24,3 @@ terra::mask(x = terra::rast(here("data/input/wtr_5arcmin.tif")),
             maskvalues = 1,
             updatevalue = -9,
             filename = here("data/input/wtr_5arcmin_aridmask.tif"))
-

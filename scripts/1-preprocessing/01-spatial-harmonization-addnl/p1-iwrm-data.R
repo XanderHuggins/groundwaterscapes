@@ -30,6 +30,10 @@ nat_vect$gw_layers %<>% as.numeric()
 nat_vect_full = nat_vect[!is.nan(nat_vect$gw_layers)]
 nat_vect_miss = nat_vect[is.nan(nat_vect$gw_layers)]
 
+# create raster identifying these countries with missing IWRM data
+iwrm_missing = terra::rasterize(x = nat_vect_miss, y = WGS84_areaRaster(5/60) |> rast(), values = 1, touches = T,
+                                filename = here("data/input/iwrm-MISSING.tif"), overwrite = TRUE)
+
 # Countries missing data: Canada, Argentina, Uruguay, Venezuela, Brunei, Eritrea, Djibouti
 missing_iso = nat_vect_miss$iso_a3
 full_iso = nat_vect_full$iso_a3

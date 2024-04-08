@@ -1,67 +1,76 @@
-radial_plot = function(dataframe.in, cluster.no, clust_length, colour.in, tier) {
+radial_plot = function(dataframe.in, cluster.no, clust_length, colour.in, labs = TRUE, 
+                       name.cust, min.bot, max.top, base.rad.in) {
   
   library(ggradar)
-  # cluster.no = 1
-  # dataframe.in = arche_codes
-  # clust_length = arche_codes$ptypeID |> unique() |> length()
-  # colour.in = metbrew_pal(clust_length, tier = 1)[cluster.no]
-
-  # dataframe.in = arche_codes
-  # cluster.no = 1
+  
   # i = 1
-  # clust_length = nclust
-  # tier = 1
-  # colour.in = metbrew_pal(nclust, tier = tier)[i]
+  # dataframe.in = archetypes,
+  # cluster.no = i,
+  # clust_length = nclust,
+  # colour.in = pal_arch[i],
+  # labs = T,
+  # name.cust = "risk",
+  # min.bot = 0.5,
+  # max.top = 3.5,
+  # base.rad.in = base_radial
   
-  # radial_plot(dataframe.in = arche_codes,
-  #             cluster.no = i,
-  #             clust_length = nclust,
-  #             colour.in = metbrew_pal(nclust, tier = 1)[i],
-  #             tier = 1) 
   
-  radar_data = dataframe.in |> 
-    as_tibble() |> 
-    filter(ptypeID == cluster.no) |> 
-    mutate(ptypeID = as.numeric(ptypeID)) |> 
-    # dplyr::select(-clust) |>
-    set_colnames(c('Cluster', 'wtr', 'por', 'gde_t', 'gde_a', 'fsz', 'gwi', 'mgmt', 'udw'))
+  radar_data = dataframe.in[i,] |> 
+    as_tibble()
   
-  mean_values = dataframe.in |> 
-    mutate(ptypeID = as.numeric(ptypeID)) |> 
-    colMeans(na.rm = TRUE)
-  
-  mean_values[1] = 0
+  mean_values = base.rad.in
+  names(mean_values) = names(dataframe.in)[1:9]
+  mean_values$ID = 0
   
   radar_data = rbind(mean_values, radar_data)
+  radar_data = radar_data[,c(9, 1:8)]
   
-  ggradar(radar_data,
-          legend.title = "",
-          legend.position = "none",
-          grid.label.size = 0,
-          gridline.mid.colour = "grey",
-          x.centre.range = 0.001,
-          background.circle.colour = "transparent",
-          background.circle.transparency = 0,
-          grid.line.width = 1,
-          gridline.min.linetype = "solid",
-          gridline.mid.linetype = "blank",
-          gridline.max.linetype = "solid",
-          group.colours = c("grey10", colour.in),
-          group.line.width = c(rep(NA, ncol(dataframe.in)), rep(3, ncol(dataframe.in))),
-          group.point.size = 0,
-          axis.label.size =  5, 
-          fill = T,
-          fill.alpha = 0.5,
-          grid.min = 0,
-          grid.mid = 2,
-          grid.max = 4)
+  radar_id = radar_data[,1]
+  radar_data = radar_data[,2:9]
   
-  if (tier == 1) {ggsave(plot = last_plot(), paste0(here("plots/radial_"), cluster.no, ".png"),
-                         dpi = 300, width = 5, height = 5, units = "in")
-                 }
+  radar_data[radar_data < min.bot] = min.bot
+  radar_data[radar_data > max.top] = max.top
   
-  if (tier == 2) {ggsave(plot = last_plot(), paste0(here("plots/tier2_radial_"), cluster.no, ".png"),
-                         dpi = 300, width = 5, height = 5, units = "in")
-                 }
+  radar_data = cbind(radar_id, radar_data)
+  
+  if (labs == FALSE) {labels = rep('', ncol(radar_data)-1)}
+  if (labs == TRUE) {labels = colnames(radar_data)[-1]}
+  
+  plt = ggradar(radar_data,
+                legend.title = "",
+                legend.position = "none",
+                grid.label.size = 0,
+                axis.labels = labels,
+                gridline.mid.colour = "grey",
+                x.centre.range = 0.001,
+                background.circle.colour = "grey90",
+                background.circle.transparency = 0,
+                grid.line.width = 1,
+                gridline.min.linetype = "solid",
+                gridline.mid.linetype = "blank",
+                gridline.max.linetype = "solid",
+                group.colours = c("grey10", colour.in),
+                group.line.width = c(rep(NA, ncol(dataframe.in)), rep(3, ncol(dataframe.in))),
+                group.point.size = 0,
+                axis.label.size =  5, 
+                fill = T,
+                fill.alpha = 0.5,
+                grid.min = min.bot,
+                grid.mid = mean(c(min.bot, max.top)),
+                grid.max = max.top)
+  # plt
+  plt = plt +
+    theme(plot.background = element_rect(fill = "white"),
+          panel.background = element_rect(fill = "white")) # #F2F2F2
+  # plt
+  
+  if (labs == TRUE) {
+    ggsave(plot = plt, paste0(here("plots/radial_L_"), name.cust, "_", cluster.no, ".png"),
+           dpi = 300, width = 5, height = 5, units = "in", bg = "transparent")  
+  }
+  if (labs == FALSE) {
+    ggsave(plot = plt, paste0(here("plots/radial_B_"), name.cust, "_", cluster.no, ".png"),
+           dpi = 300, width = 5, height = 5, units = "in", bg = "transparent")  
+  }
   
 }

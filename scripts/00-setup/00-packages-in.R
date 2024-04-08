@@ -30,6 +30,7 @@ library(cluster)
 library(aweSOM)
 library(parallel)
 library(doParallel)
+library(clusterSim)
 
 # spatial
 library(raster) 
