@@ -8,7 +8,7 @@ colnames = c("Water Table Ratio", "Porosity", "Terr. GDE", "Aqu. GDE", "Field si
 M = cor(x = input_data |> 
           mutate(udw = -udw) |> 
           set_colnames(colnames) |> 
-          slice_sample(n = 10000), 
+          slice_sample(n = 40000), 
         method = "pearson")
 round(M, 2)
 

@@ -6,10 +6,10 @@ library(readr)
 library(tibble)
 
 # input data
-input_data = readr::read_rds("./input_data/input_features_full_set_norm.rds")
+input_data = readr::read_rds("./input_data/01_synthetic_input_data.rds")
 
 # iteration index
-iter_index = readr::read_rds("./input_data/01_SOM_iteration_sizing_index.rds")
+iter_index = readr::read_rds("./input_data/00_synthetic_SOM_iteration_sizing_index.rds")
 
 # input from command line
 input_iter_from_shell = as.numeric(commandArgs(trailingOnly = TRUE))
@@ -28,7 +28,7 @@ som_iter = kohonen::supersom(som_input,
                              keep.data = TRUE)
 
 write_rds(x = som_iter,
-          file = paste0("./som_files/som1_nrc_", som_size, "_iter_", iter_no, ".rds"))
+          file = paste0("./som_files_synthetic/som1_nrc_", som_size, "_iter_", iter_no, ".rds"))
 
 som_quality = aweSOM::somQuality(som = som_iter, traindat = som_input)
 cluster_quality = clusterSim::index.DB(x = som_input, cl = som_iter$unit.classif)
@@ -44,4 +44,4 @@ som_quality_df = tibble(
 )
 
 write_rds(x = som_quality_df,
-          file = paste0("./som_performance/som1_nrc_", som_size, "_iter_", iter_no, ".rds"))
+          file = paste0("./som_performance_synthetic/som1_nrc_", som_size, "_iter_", iter_no, ".rds"))
