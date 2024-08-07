@@ -1,6 +1,12 @@
+library(here); source(here(("scripts/on_button.R")))
+
+### ---------------------\\ 
+# Script objective:
+# Assess performance of all second-stage SOM models select best performing model
+### ---------------------\\ 
 
 # import the prototype data, and estimate the number of cluster centers
-prototypes = readr::read_rds(here("data/som_files/som_files_full/som1_nrc_22_iter_40.rds"))
+prototypes = readr::read_rds(here("data/som_files/som_files_full/som1_nrc_22_iter_37.rds"))
 prototypes = prototypes$codes[[1]] |> as_tibble()
 
 clut_apriori = NbClust(data = prototypes, 
@@ -14,8 +20,10 @@ apriori_df = apriori_df$nc |> unlist() |> as.vector() |> as.numeric() |> table()
 apriori_df$best_nc = apriori_df$best_nc |> as.character() |> as.numeric()
 apriori_df$freq = apriori_df$freq |> as.character() |> as.numeric()
 
-best_nc = median(apriori_df$best_nc)[1]
-best_nc = 6
+best_nc = trunc(median(apriori_df$best_nc)[1])
+#> 8
+best_nc = 8
+
 # trunc(weighted.mean(x= apriori_df$best_nc, w = apriori_df$freq))
 # results suggest that 5 clusters should be a-priori estimate
 # weighted meadian is 5.5
@@ -165,7 +173,7 @@ hist(sensitivity_df$size)
 
 ggplot(sensitivity_df, aes(x = mad_range, bias_weight, fill= size)) + 
   geom_tile(width = 0.05) +
-  # geom_text(aes(label=size)) +
+  geom_text(aes(label=size)) +
   # geom_text(aes(label=iter)) +
   MetBrewer::scale_fill_met_c(name = "Redon") +
   coord_cartesian(expand = 0) +
@@ -178,12 +186,12 @@ ggsave(plot = last_plot(),
        units = "cm",
        dpi = 400)
 
-sensitivity_df |> filter(size == 18)
+sensitivity_df |> filter(size == 20)
 
 # though it's found in a minority of cases, we select som size of 17 as it best balances reproducibility, and size bias 
 
-win_size = 18
-win_iter = 23
+win_size = 15
+win_iter = 41
 
 file.copy(from = paste0(here("data/som_files/som2_files/som2_nclust_"),
                         win_size, "_iter_", win_iter, ".rds"),
@@ -203,8 +211,11 @@ dbi_scaled
 ggplot() +
   # explained variance
   # geom_line(aes(y = rank_s), col = "#EF440C", linewidth = 2) +
-  geom_point(data = df,     aes(x= som_size, y = sizebias_scaled), col = "grey30", size = 3, alpha = 0.6) +
-  # geom_point(data = best_at_size, aes(x= som_size, y = perf), col = "black", size = 5) +
+  # geom_point(data = df,     aes(x= som_size, y = sizebias_scaled), col = "grey30", size = 3, alpha = 0.6) +
+  # geom_point(data = df_keep_combined,     aes(x= som_size, y = dbi_scaled), col = "grey30", size = 3, alpha = 0.6) +
+  # geom_point(data = df_keep_combined,     aes(x= som_size, y = k_l_scaled), col = "grey30", size = 3, alpha = 0.6) +
+  # geom_point(data = df_keep_combined,     aes(x= som_size, y = unexv_scaled), col = "grey30", size = 3, alpha = 0.6) +
+  geom_point(data = df_keep_combined,     aes(x= som_size, y = perf_x_size), col = "grey30", size = 3, alpha = 0.6) +
   coord_cartesian(ylim=c(0, 1), xlim = c(1.5, 30.5), expand = 0, clip = "off") +
   scale_x_continuous(breaks = seq(4, 30, by = 2)) +
   scale_y_continuous(breaks = seq(0, 1, by = 0.1)) +
@@ -214,17 +225,8 @@ ggplot() +
         axis.text = element_text(size=13),
         axis.title = element_blank()) 
 ggsave(plot = last_plot(),
-       filename = here("plots/SOM2_element_sizebias_scaled.png"),
+       filename = here("plots/SOM2_element_unexv_scaled.png"),
        height = 10,
        width = 18,
        units = "cm",
        dpi = 400)
-
-# win_size = 11
-# win_iter = 119
-# 
-# file.copy(from = paste0(here("data/som_files/som2_files/som2_nclust_"),
-#                         win_size, "_iter_", win_iter, ".rds"),
-#           to = here("data/som_files/som_selections/som2_selection.rds"),
-#           overwrite = TRUE,
-#           copy.mode = TRUE)

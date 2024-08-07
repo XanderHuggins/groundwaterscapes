@@ -1,6 +1,14 @@
+library(here); source(here(("scripts/on_button.R")))
+
+### ---------------------\\ 
+# Script objective:
+# Develop second-stage SOM models on output codebook vectors from selected first-stage SOM model 
+# and write each model and its performance to file
+### ---------------------\\ 
+
 ## --------------------------- \
 # import best-performing first-stage SOM and extract codebook vectors
-prototypes = readr::read_rds(here("data/som_files/som_files_full/som1_nrc_22_iter_40.rds"))
+prototypes = readr::read_rds(here("data/som_files/som_files_full/som1_nrc_22_iter_37.rds"))
 prototypes = prototypes$codes[[1]] |> as.data.frame()
 
 # set range of second-stage SOM following range suggested by Eisenack et al. 2021
@@ -19,8 +27,8 @@ for (n_clust in seq(r_min, r_max, by = 1)) {
   
   # data frame to store SOM quality metrics for each lattice size
   quality_df = data.frame(
-    iter = seq(1:120),  # 20 iterations per SOM lattice
-    quant = rep(NA),   # all other parts of this df as same as in first-stage SOM 
+    iter = seq(1:120),  # iterations per SOM lattice
+    quant = rep(NA),    # all other parts of this df as same as in first-stage SOM 
     varra = rep(NA),
     k_l  = rep(NA),
     topo = rep(NA),

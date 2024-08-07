@@ -1,5 +1,9 @@
-## --------------------------- \
-## Assess performance of all SOM iterations and select best performing dimension
+library(here); source(here(("scripts/on_button.R")))
+
+### ---------------------\\ 
+# Script objective:
+# Assess performance of all SOM models trained on synthetic data and select best performing model
+### ---------------------\\ 
 
 # Import performance metrics of each SOM1 architecture size
 df = readr::read_rds(here("data/som_files/som1_performance_synthetic/som_SYNTHspace_performance_combined.rds"))
@@ -96,7 +100,7 @@ som_size = 22
 iter_index = expand.grid(size_iter = c(1:60),
                          size = som_size)
 
-write_rds(iter_index, file = here("data/som_files/som_derivation_data/01_full_SOM_iteration_sizing_index.rds"))
+write_rds(iter_index, file = here("data/som_files/som_derivation_data/00_full_SOM_iteration_sizing_index.rds"))
 
 
 ##
@@ -122,84 +126,10 @@ ggplot() +
         panel.grid.major = element_line(),
         axis.text = element_text(size=13),
         axis.title = element_blank()) 
+
 ggsave(plot = last_plot(),
        filename = here("plots/SOM1_synthetic_best_size_evaluation.png"),
        height = 10,
        width = 18,
        units = "cm",
        dpi = 400)
-
-
-
-
-# manually move this som file from RDAC server to data/som_files/som_selections folder
-
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-
-
-### OLD APPROACH BELOW
-# 
-# # convert explained variance to unexplained variance
-# df$unexv = (100 - df$varra)/100
-# 
-# # scale performance metrics so each has unit variance (equal contribution to additive performance metric)
-# df$topo_scaled = minmaxnorm(df$topo / sd(df$topo))
-# df$unex_scaled = minmaxnorm(df$unexv / sd(df$unexv))
-# 
-# # calculate performance metric of first-stage SOM 
-# df$perf = minmaxnorm(df$topo_scaled + df$unex_scaled)
-# 
-# # plot performance outcomes of all first-stage SOM iterations
-# plot(df$perf ~ df$som_size, main = "all_cedar")
-# rowno = which.min(df$perf)
-# winning_size = df[rowno,]
-# winning_size 
-# 
-# # Can observe considerable variability in these performance results 
-# # (i.e. SOM size 20x20 has both the best performing SOM  BUT also the greatest variation in SOM performance across all sizes)
-# # So, need to remove outliers to improve robustness so this first-stage SOM reflects general performance trends when looking at all iterations 
-# 
-# ## --------------------------- \
-# # initialize a data frame to hold iterations that are identified as NOT outliers 
-# df_keep = matrix(nrow = 1, ncol = ncol(df)) |>  as.data.frame()
-# names(df_keep) = names(df)
-# 
-# # set median absolute deviation factor to detect outliers +/- this MAD around the median per SOM size
-# mad_x = 1 # set narrower band for high robustness (i.e., consistent determination of best-performing SOM size between script re-runs)
-# 
-# for (i in unique(df$som_size)) {
-#   
-#   # i = 12
-#   iter_df = df |> dplyr::filter(som_size == i)
-#   iter_perf = iter_df$perf
-#   min_lim = median(iter_perf) - mad_x*mad(iter_perf) # identify lower limit of non-outliers  
-#   max_lim = median(iter_perf) + mad_x*mad(iter_perf) # identify upper limit of non-outliers
-#   
-#   iter_df = iter_df |> dplyr::filter(perf >= min_lim) |> dplyr::filter(perf <= max_lim) # keep only iterations within these limits
-#   df_keep = rbind(df_keep, iter_df) # bind non-outlier iterations
-# }
-# # write_rds(df_keep, file = here("data/som_files/som1_CEDAR_keep_performance.rds")) # write this outlier-removed df to file
-# 
-# # plot all rows that are retained after outlier removal
-# plot(df_keep$perf ~ df_keep$som_size, main = "less outliers") 
-# 
-# # determine best-performing SOM among non-outlier iterations
-# rowno = which.min(df_keep$perf)
-# winning_size = df_keep[rowno,]
-# winning_size # this is best-performing SOM from first-stage 
-# 
-# ### We can observe that the best performing first-stage SOM is:
-# # som_size = 38
-# # som_iter = 44
-# 
-# # manually move this som file from RDAC server to data/som_files/som_selections folder

@@ -69,9 +69,10 @@ for (i in 1:nrow(res_df)) {
   
 }
 
-ggplot(data = res_df) + geom_point(aes(x = siei, y = cntg/100), shape = 21, size = 8, fill = "black", alpha = 0.8) +
+ggplot(data = res_df |> filter(id == 24)) + 
+  geom_point(aes(x = siei, y = cntg/100), shape = 21, size = 8, fill = "black", alpha = 0.8) +
   geom_text(aes(x = siei, y = cntg/100, label = id), colour = "white", size = 4)+
-  # coord_cartesian(xlim=c(0, 1), ylim = c(0.25,1), expand = 0) +
+  coord_cartesian(xlim=c(0, 1), ylim = c(0.25,1), expand = 0) +
   my_theme + 
   # scale_x_continuous(breaks = seq(1, 11, by = 1)) +
   # coord_cartesian(xlim = c(1, 11), ylim = c(0, 0.9)) +
@@ -107,7 +108,7 @@ summary_df = data.frame(aquiferID = whymap$idalph,
                         arch_n = rep(NA),
                         archs = rep(NA))
 
-base_area_df = data.frame(arch = seq(1, 18))
+base_area_df = data.frame(arch = seq(1, 15))
 
 for (i in 1:nrow(res_df)) {
   # i = 1

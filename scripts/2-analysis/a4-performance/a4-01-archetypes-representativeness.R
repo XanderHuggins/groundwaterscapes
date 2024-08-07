@@ -2,12 +2,12 @@
 # determine how well each grid cell is represented by the 9 final archetypes
 
 # Import final archetypes map
-atypes = terra::rast(here("data/groundwater-SYSTEM-archetypes_3x3_currentiter.tif"))
+atypes = terra::rast(here("data/groundwater-SYSTEM-archetypes_currentiter.tif"))
 
 # Import archetypes codebook vector
 cbv = readr::read_rds(here("data/som_files/som_selections/som2_selection.rds"))
 cbv = cbv$codes[[1]] |> as_tibble()
-cbv$ID = seq(1, 18)
+cbv$ID = seq(1, 15)
 
 # need to update the IDs based on reordered archetpyes 
 # cbv = merge(x = cbv, y = readr::read_rds(here("data/archetype_reorder_matrix.rds")),
@@ -23,7 +23,7 @@ atype_gdet  = rasterDT::subsDT(x = raster(atypes), dict = data.frame(from = cbv$
 atype_gdea  = rasterDT::subsDT(x = raster(atypes), dict = data.frame(from = cbv$ID, to = cbv$gde_a)) |> rast()
 atype_fsize = rasterDT::subsDT(x = raster(atypes), dict = data.frame(from = cbv$ID, to = cbv$fsize)) |> rast()
 atype_aeigw = rasterDT::subsDT(x = raster(atypes), dict = data.frame(from = cbv$ID, to = cbv$aeigw)) |> rast()
-atype_gwmgm = rasterDT::subsDT(x = raster(atypes), dict = data.frame(from = cbv$ID, to = cbv$gw_mgmt)) |> rast() 
+atype_gwmgm = rasterDT::subsDT(x = raster(atypes), dict = data.frame(from = cbv$ID, to = cbv$wgi_ge)) |> rast() 
 atype_udw   = rasterDT::subsDT(x = raster(atypes), dict = data.frame(from = cbv$ID, to = cbv$udw))|> rast()
 
 
@@ -57,7 +57,7 @@ dist_rast_z = (dist_rast - stat_df$mean) / stat_df$sd
 # appraoch that performs z score normalization per archetype
 dist_rast_z = rast(atypes)
 
-for (jj in 1:18) {
+for (jj in 1:15) {
   # jj = 1
   dist_rast_z[atypes == jj] = (dist_rast[atypes == jj] - stat_df$mean[jj]) / stat_df$sd[jj]
   

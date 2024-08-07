@@ -1,3 +1,8 @@
+### ---------------------\\ 
+# Script objective:
+# On same compute cluster, merge SOM model results into a single data frame
+### ---------------------\\ 
+
 library(readr)
 library(tibble)
 library(purrr)

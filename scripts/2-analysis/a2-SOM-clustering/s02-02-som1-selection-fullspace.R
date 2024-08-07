@@ -1,3 +1,9 @@
+library(here); source(here(("scripts/on_button.R")))
+
+### ---------------------\\ 
+# Script objective:
+# Assess performance of all SOM models trained on full set of input data and select best performing model
+### ---------------------\\ 
 
 # Import performance metrics of each SOM1 architecture size
 df = readr::read_rds(here("data/som_files/som_performance_full/som_FULLspace_performance_combined.rds"))
@@ -90,4 +96,4 @@ winning_size # this is best-performing SOM from first-stage
 
 ### We can observe that the best performing first-stage SOM is:
 som_size = 22
-som_iter = 40
+som_iter = 37

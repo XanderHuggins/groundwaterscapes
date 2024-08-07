@@ -10,14 +10,14 @@ data_stack = c(
   terra::rast(here("data/input/gde-density.tif")) |> na_cells_to_val(value = -1), 
   terra::rast(here("data/input/field_size_modal_rcl_5arcmin.tif")) |> na_cells_to_val(value = -1), 
   terra::rast(here("data/input/gmia_aeigw_pct_aei.tif")) |> na_cells_to_val(value = -1), 
-  terra::rast(here("data/input/iwrm-gw-layers-norm.tif")),
+  terra::rast(here("data/input/wgi_ge_2020.tif")),
   terra::rast(here("data/input/udw_raw.tif")) |> na_cells_to_val(value = -1),
   id_ras) |> 
   terra::mask(mask = terra::rast(here("data/earth_mask_5arcmin.tif")),
               maskvalues = c(0,2,3))
 
-complete_coverage = rast(here("data/archived_data/complete_coverage.tif"))
-data_stack[complete_coverage == 0] = NA
+project_mask = rast(here("data/project_mask.tif"))
+data_stack[is.na(project_mask)] = NA
 
 ## --------------------------- \
 # Earth system classifications
@@ -124,31 +124,36 @@ foodsys_matrix[] |> unique() |> length()
 ## --------------------------- \
 # Governance classifications
 
-iwrm_rast = raster(here("data/input/iwrm-gw-layers.tif"))
-rcl.m = c(-Inf, 10, 1,
-          10, 30, 2,
-          30, 50, 3,
-          50, 70, 4,
-          70, 90, 5,
-          90, Inf, 6) |> 
+goveff_rast = raster(here("data/input/wgi_ge_2020.tif"))
+
+ge = read_csv("D:/Geodatabase/Governance/wgi_2020.csv") |> dplyr::select(c("Code", "GE"))
+ge_p = quantile(ge$GE, seq(0, 1, length.out = 7), na.rm = T)
+
+rcl.m = c(-Inf, ge_p[2], 1,
+          ge_p[2], ge_p[3], 2,
+          ge_p[3], ge_p[4], 3,
+          ge_p[4], ge_p[5], 4,
+          ge_p[5], ge_p[6], 5,
+          ge_p[6], Inf, 6) |> 
   matrix(ncol = 3, byrow = TRUE)
 
-iwrm_class = terra::classify(x = rast(iwrm_rast), rcl = rcl.m, include.lowest = TRUE)
-plot(iwrm_class)
+ge_class = terra::classify(x = rast(goveff_rast), rcl = rcl.m, include.lowest = TRUE)
+plot(ge_class)
 
 plot(data_stack[[8]])
-rcl.m = c(-Inf, 0.025, 1,
-          0.025, 0.05, 2,
-          0.05, 0.10, 3,
-          0.10, 0.20, 4,
-          0.20, 0.40, 5,
-          0.40, Inf, 6) |> 
+
+rcl.m = c(-Inf, 0.025, 6,
+          0.025, 0.05, 5,
+          0.05, 0.10, 4,
+          0.10, 0.20, 3,
+          0.20, 0.40, 2,
+          0.40, Inf, 1) |> 
   matrix(ncol = 3, byrow = TRUE)
 
 udw_class = terra::classify(x = data_stack[[8]], rcl = rcl.m, include.lowest = TRUE)
 plot(udw_class)
 
-gov_matrix = (10*iwrm_class) + udw_class
+gov_matrix = (10*ge_class) + udw_class
 plot(gov_matrix)
 
 # unique count
@@ -180,15 +185,15 @@ terra::writeRaster(x = matrix_stack,
                    wopt=list(datatype="FLT8S")) # need this type to preserve all 8 digits in unique matrix ID, else trimmed to 6 sigfig
 
 ## --------------------------- \
-# identify number of unique matrix combinations
-matrix_stack$all |> unique() |> nrow() # 79,177 unique combinations... 
-
-# sanity check that writing to file preserves complete ID 
-matrix_stack2 = rast(here("data/matrix_stack_altGDEclass.tif"))
-matrix_stack2$all |> unique() |> nrow() # 79,177 unique combinations... 
-freq_df = matrix_stack2[[5]] |> as.vector() |> table() |> as.data.frame() 
-freq_df |> filter(Freq >= 1) |> nrow()
-freq_df |> filter(Freq > 1) |> nrow()
+# # identify number of unique matrix combinations
+# matrix_stack$all |> unique() |> nrow() # 120,111 unique combinations... 
+# 
+# # sanity check that writing to file preserves complete ID 
+# matrix_stack2 = rast(here("data/matrix_stack_altGDEclass.tif"))
+# matrix_stack2$all |> unique() |> nrow() # 79,177 unique combinations... 
+# freq_df = matrix_stack2[[5]] |> as.vector() |> table() |> as.data.frame() 
+# freq_df |> filter(Freq >= 1) |> nrow()
+# freq_df |> filter(Freq > 1) |> nrow()
 
 ## --------------------------- \
 ## old scripts below -- ignore

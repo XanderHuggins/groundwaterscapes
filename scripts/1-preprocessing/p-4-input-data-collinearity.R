@@ -1,14 +1,14 @@
 
-# ss_df = read_rds(here("data/ds_df_full.rds")) 
+input_data = read_rds(here("data/ds_df_full.rds")) |> dplyr::select(!c('id'))
 
-input_data = readr::read_rds(here("data/som_files/som_derivation_data/02_full_input_data_norm.rds"))
+# input_data = readr::read_rds(here("data/som_files/som_derivation_data/02_full_input_data_norm.rds"))
 
-colnames = c("Water Table Ratio", "Porosity", "Terr. GDE", "Aqu. GDE", "Field size", "GW Irr.", "GW mgmt.", "Improved drinking water")
+colnames = c("Water Table Ratio", "Porosity", "Terr. GDE", "Aqu. GDE", "Field size", "GW Irr.", "Gov.Eff.", "Imp. Drink. water")
 
 M = cor(x = input_data |> 
           mutate(udw = -udw) |> 
-          set_colnames(colnames) |> 
-          slice_sample(n = 40000), 
+          set_colnames(colnames) |>
+          slice_sample(n = 30000), 
         method = "pearson")
 round(M, 2)
 

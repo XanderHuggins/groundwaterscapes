@@ -1,3 +1,8 @@
+### ---------------------\\ 
+# Script objective:
+# On a compute cluster, develop SOM models across range of grid sizes and write outputs to file
+### ---------------------\\ 
+
 # libraries
 library(kohonen)
 library(aweSOM)
