@@ -1,4 +1,3 @@
-
 # Set working directory to the location of the project
 library(here)
 

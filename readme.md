@@ -1,11 +1,13 @@
 # Groundwaterscapes code repository
 
+[![](<https://img.shields.io/badge/Dataverse DOI-10.5683/SP3/MFYCWV-yellow>)](https://doi.org/10.5683/SP3/MFYCWV)
+
 This is the code repository associated with the manuscript: Huggins et al. (2024). **Groundwaterscapes: A global classification and mapping of groundwater’s large-scale socioeconomic, ecological, and Earth system functions**.  *Water Resources Research*. (in press).
 
 This repository includes all scripts necessary to preprocess input data and reproduce the groundwaterscape map. Some scripts have been executed on clusters provided by the Digital Research Alliance of Canada and will not be fully executable on local machines.
 
 **`\Scripts` folder sub-structure**: <br/>
-- `on_button.R`: Calls the here() function and sources scripts in the `\00-setup` and `\0-functions` folders.
+- `on_button.R`: Calls the `here()` function and sources scripts in the `\00-setup` and `\0-functions` folders.
 - `\00-steup`: Loads required packages, sets package options, and configures plotting themes.
 - `\0-functions`: Contains custom functions with explanatory names.
 - `\1-preprocessing`: 
