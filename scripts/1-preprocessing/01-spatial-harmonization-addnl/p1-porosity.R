@@ -1,4 +1,3 @@
-
 gdalUtilities::gdal_rasterize(src_datasource = "D:/Geodatabase/Groundwater/GLHYMPS/GLHYMPS_wgs84.shp",
                               dst_filename = here("data/input/porosity_5arcmin.tif"),
                               at = T,

@@ -1,11 +1,10 @@
-
 # create governance effectiveness raster
 
 # bring in country outlines
 nat_vect = rnaturalearth::ne_countries(scale = 10, returnclass = "sf") |> 
   terra::vect()
 
-# missing from the rnaturalearth database 
+# correct/match ISOs from the 'rnaturalearth' database 
 nat_vect$iso_a3[nat_vect$sovereignt == "France"] = "FRA"
 nat_vect$iso_a3[nat_vect$sovereignt == "Norway"] = "NOR"
 nat_vect$iso_a3[nat_vect$sovereignt == "Somaliland"] = "SOM"
@@ -14,24 +13,22 @@ nat_vect$iso_a3[nat_vect$sovereignt == "Kazakhstan"] = "KAZ"
 nat_vect$iso_a3[nat_vect$sovereignt == "Andorra"] = "ADO"
 nat_vect$iso_a3[nat_vect$sovereignt == "Romania"] = "ROM"
 nat_vect$iso_a3[nat_vect$sovereignt == "Kosovo"] = "KSV"
-
 nat_vect$iso_a3[nat_vect$admin == "Aland"] = "FIN"
-
 nat_vect$iso_a3[nat_vect$admin == "Palestine"] = "WBG"
 nat_vect$iso_a3[nat_vect$admin == "Northern Cyprus"] = "CYP"
 nat_vect$iso_a3[nat_vect$admin == "East Timor"] = "TMP"
 nat_vect$iso_a3[nat_vect$admin == "Southern Patagonian Ice Field"] = "ARG"
 nat_vect$iso_a3[nat_vect$admin == "Falkland Islands"] = "GBR"
 
+# keep only ISO data with geometry
 nat_vect = nat_vect[,c("iso_a3")]
-
 
 # import worldwide governance indicators
 wgi = read_csv("D:/Geodatabase/Governance/wgi_2020.csv") |> 
   dplyr::select(c("Code", "GE"))
 
+# merge data with geometry
 nat_vect = merge(x = nat_vect, y = wgi, by.x = "iso_a3", by.y = "Code")
-
 
 # write to file
 terra::writeVector(x = nat_vect,

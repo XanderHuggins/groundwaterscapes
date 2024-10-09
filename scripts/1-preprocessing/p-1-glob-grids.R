@@ -1,6 +1,11 @@
-# Name: p0-glob-grids.R
+### ---------------------\\ 
+# Script objective:
+# Generate global area grids and a consistent land surface mask  
+### ---------------------\\
+library(here); source(here(("scripts/on_button.R")))
+###
 
-# 30 arcsecond (1km)
+# 30 arc-second (1km)
 writeRaster(x = rast(WGS84_areaRaster(0.5/60)),
             filename = here("data/ggrid_30arcsec.tif"),
             overwrite = T)
@@ -10,12 +15,12 @@ writeRaster(x = rast(WGS84_areaRaster(0.05)),
             filename = here("data/ggrid_0d05dd.tif"),
             overwrite = T)
 
-# 5 arcminute (10km)
+# 5 arc-minute (10km)
 writeRaster(x = rast(WGS84_areaRaster(5/60)),
             filename = here("data/ggrid_5arcmin.tif"),
             overwrite = T)
 
-# 5 arcminute masked
+# 5 arc-minute masked
 emask = terra::rast(here("data/earth_mask_5arcmin.tif"))
 emask[emask != 1] = NA
 
@@ -23,7 +28,7 @@ writeRaster(x = ( emask * terra::rast(here("data/ggrid_5arcmin.tif")) ),
             filename = here("data/ggrid_masked_5arcmin.tif"),
             overwrite = T)
 
-
+# land surface mask, from the GSHHG Earth Mask
 emask = terra::rast(here("data/earth_mask_5arcmin.tif"))
 emask[emask == 0] = NA
 emask[emask > 0] = 1

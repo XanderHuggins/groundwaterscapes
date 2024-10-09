@@ -1,3 +1,8 @@
+### ---------------------\\ 
+# Script objective:
+# Set ggplot theme and groundwaterscape colour palette 
+### ---------------------\\ 
+
 my_theme = theme_minimal()+
   theme(legend.title = element_blank(),
         legend.position = "none",
@@ -7,33 +12,7 @@ my_theme = theme_minimal()+
         plot.background = element_rect(fill = "transparent", colour = NA))
 
 
-met.pal.use = "Cross"
-
-# pal_arch = met.brewer(name = "Cross", n = 11, type = "continuous")[c(1:3, 5:11)]
-pal_arch = met.brewer(name = "Cross", n = 18, type = "continuous", dir = -1) # [c(1:3, 5:11)]
-pal_arch
-
-### ----------------- OLD PAL
-# 1-4
-gde_blues = met.brewer(name = "Cross", n = 18, type = "continuous", dir = -1)[1:4]
-
-# 5 - 7
-large_ag = met.brewer(name = "Nattier", n = 9, type = "continuous", dir = 1)[5:7]
-
-# 8 - 9
-gw_ag = met.brewer(name = "Tam", n = 10, type = "continuous", dir = 1)[c(5,8)]
-
-# 10 - 13
-climate = met.brewer(name = "Hiroshige", n = 10, type = "continuous", dir = 1)[6:9]
-
-# 14
-minimal_all = met.brewer(name = "OKeeffe2", n = 8, type = "continuous", dir = 1)[6]
-
-# 15 - 18
-minimal_ef = met.brewer(name = "OKeeffe2", n = 8, type = "continuous", dir = 1)[2:5]
-
-pal_arch = c(gde_blues, large_ag, gw_ag, climate, minimal_all, minimal_ef)
-pal_arch
+# Generate groundwaterscape palette 
 
 # 
 #1-3
@@ -60,3 +39,10 @@ pal_14_15 = met.brewer(name = "Cross", n = 18, type = "continuous", dir = -1)[1:
 
 pal_arch = c(pal_1_3, pal_4_5, pal_6_7, pal_8_9, pal_10_11, pal_12_13, pal_14_15)
 pal_arch
+
+pal_arch = data.frame(
+  GWscape_ID = seq(1:15),
+  HEXCODE = pal_arch
+)
+
+write_csv(pal_arch, here("data/!Borealis/groundwaterscape-colour-scheme.csv"))

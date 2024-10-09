@@ -1,9 +1,9 @@
-library(here); source(here(("scripts/on_button.R")))
-
 ### ---------------------\\ 
 # Script objective:
-# Create a data frame that lists all SOM grid sizes to iterate across
-### ---------------------\\ 
+# Create a data frame that lists all SOM model grid sizes to iterate across
+### ---------------------\\
+library(here); source(here(("scripts/on_button.R")))
+###
 
 input_data = read_rds(here("data/som_files/som_derivation_data/01_synthetic_input_data.rds"))
 n_patterns = input_data |> nrow() #12,000

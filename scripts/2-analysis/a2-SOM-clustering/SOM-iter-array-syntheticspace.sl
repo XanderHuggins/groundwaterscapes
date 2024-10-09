@@ -15,4 +15,4 @@
 
 module load r/4.3.1
 
-Rscript s01-01-som1-iterations-syntheticspace.R $SLURM_ARRAY_TASK_ID
+Rscript a2-1-1-som1-iterations-syntheticspace.R $SLURM_ARRAY_TASK_ID

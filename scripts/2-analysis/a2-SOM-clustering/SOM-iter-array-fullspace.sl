@@ -15,4 +15,4 @@
 
 module load r/4.3.1
 
-Rscript 02-01-som1-iterations-fullspace.R $SLURM_ARRAY_TASK_ID
+Rscript a2-2-1-som1-iterations-fullspace.R $SLURM_ARRAY_TASK_ID

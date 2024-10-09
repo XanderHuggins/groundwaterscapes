@@ -1,9 +1,9 @@
-library(here); source(here(("scripts/on_button.R")))
-
 ### ---------------------\\ 
 # Script objective:
 # Use agglomerative clustering to group groundwaterscapes
-### ---------------------\\ 
+### ---------------------\\
+library(here); source(here(("scripts/on_button.R")))
+###
 
 archetypes = readr::read_rds(here("data/som_files/som_selections/som2_selection.rds"))
 archetypes = archetypes$codes[[1]] |> as_tibble()

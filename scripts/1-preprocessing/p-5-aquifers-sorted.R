@@ -1,8 +1,11 @@
-# order aquifers alphabetically
+### ---------------------\\ 
+# Script objective:
+# Sort WHYMAP aquifers alphabetically 
+### ---------------------\\
+library(here); source(here(("scripts/on_button.R")))
+###
 
 whymap = terra::vect(here("data/input/Major__Aquifers.shp"))
-
-head(whymap)
 
 whymap = whymap[order(whymap$Aquifer_sy),]
 whymap$IDalph = seq(1, nrow(whymap))

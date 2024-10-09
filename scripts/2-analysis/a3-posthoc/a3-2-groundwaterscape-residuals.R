@@ -1,21 +1,17 @@
-
-# determine how well each grid cell is represented by the 9 final archetypes
+### ---------------------\\ 
+# Script objective:
+# Calculate residual from local groundwaterscape model per grid cell
+### ---------------------\\
+library(here); source(here(("scripts/on_button.R")))
+###
 
 # Import final archetypes map
-atypes = terra::rast(here("data/groundwater-SYSTEM-archetypes_currentiter.tif"))
+atypes = terra::rast(here("data/groundwaterscapes-currentiter"))
 
 # Import archetypes codebook vector
 cbv = readr::read_rds(here("data/som_files/som_selections/som2_selection.rds"))
 cbv = cbv$codes[[1]] |> as_tibble()
 cbv$ID = seq(1, 15)
-
-# need to update the IDs based on reordered archetpyes 
-# cbv = merge(x = cbv, y = readr::read_rds(here("data/archetype_reorder_matrix.rds")),
-#             by.x = "ID", by.y = "from")
-# cbv = cbv[order(cbv$to),]
-# cbv$ID = cbv$to
-# cbv$to= NULL
-# cbv |> as_tibble()
 
 atype_wtr   = rasterDT::subsDT(x = raster(atypes), dict = data.frame(from = cbv$ID, to = cbv$wtr)) |> rast()
 atype_por   = rasterDT::subsDT(x = raster(atypes), dict = data.frame(from = cbv$ID, to = cbv$por)) |> rast()

@@ -1,10 +1,10 @@
-library(here); source(here(("scripts/on_button.R")))
-
 ### ---------------------\\ 
 # Script objective:
 # Develop second-stage SOM models on output codebook vectors from selected first-stage SOM model 
 # and write each model and its performance to file
-### ---------------------\\ 
+### ---------------------\\
+library(here); source(here(("scripts/on_button.R")))
+###
 
 ## --------------------------- \
 # import best-performing first-stage SOM and extract codebook vectors

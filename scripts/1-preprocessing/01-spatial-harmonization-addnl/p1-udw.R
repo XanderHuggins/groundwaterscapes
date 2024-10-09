@@ -8,20 +8,10 @@ terra::writeVector(x = udw,
                    filetype = "GPKG",
                    overwrite = TRUE)
 
-# rasterize 
+# rasterize the normalized value
 terra::rasterize(x = terra::vect("D:/Geodatabase/WRI-Aqueduct/udw_norm.gpkg"),
                  y = terra::rast(here("data/ggrid_5arcmin.tif")),
                  field = 'udw_norm',
                  touches = TRUE,
                  filename = here("data/input/udw_norm.tif"),
-                 overwrite = TRUE)
-
-plot(terra::rast(here("data/input/udw_norm.tif")))
-
-# also rasterise the raw value for later use 
-terra::rasterize(x = terra::vect("D:/Geodatabase/WRI-Aqueduct/udw_norm.gpkg"),
-                 y = terra::rast(here("data/ggrid_5arcmin.tif")),
-                 field = 'udw_raw',
-                 touches = TRUE,
-                 filename = here("data/input/udw_raw.tif"),
                  overwrite = TRUE)

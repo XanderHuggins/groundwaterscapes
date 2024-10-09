@@ -1,13 +1,14 @@
-##################################################### --
-## Calculate landscape metrics for the 37 whymap aquifers
-##################################################### --
+### ---------------------\\ 
+# Script objective:
+# Calculate landscape metrics for the 37 WHYMAP aquifers
+### ---------------------\\
+library(here); source(here(("scripts/on_button.R")))
+###
 
-# split this script into the individual analyses and print out results below each
-
-# Import raster of archetypes, area raster, and polygons of the whymap aquifers
-archs = terra::rast(here("data/groundwater-SYSTEM-archetypes_currentiter.tif"))
+# Import raster of archetypes, area raster, and polygons of the WHYMAP aquifers
+archs = terra::rast(here("data/groundwaterscapes-currentiter"))
 whymap = terra::vect(here("data/input/major_aquifers_sorted.sqlite"))
-whymap_r = terra::rasterize(x = whymap, y = archs, field = "idalph", touches = TRUE) # rasterize ALPHebetized whymap order
+whymap_r = terra::rasterize(x = whymap, y = archs, field = "idalph", touches = TRUE) # rasterize alphebetized whymap order
 area = terra::rast(here("data/ggrid_5arcmin.tif"))
 
 # get cell adjacencies

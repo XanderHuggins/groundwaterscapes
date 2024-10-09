@@ -1,21 +1,19 @@
-# Name: packages-in.R
-# Description: Import packages
+### ---------------------\\ 
+# Script objective:
+# Import packages needed for workflow 
+### ---------------------\\ 
 
 # general
 library(tidyverse)
 library(magrittr)
-library(collapse)
 
 # stats / clustering
 library(Hmisc)
-library(fpc)
 library(NbClust)
 library(clValid)
 library(clv)
 library(kohonen)
-library(mclust)
 library(factoextra)
-library(parameters)
 library(reldist)
 library(BAMMtools)
 library(classInt)
@@ -25,11 +23,8 @@ library(Rfast)
 library(pdist)
 library(overlapping)
 library(corrplot)
-library(GGally)
 library(cluster)
 library(aweSOM)
-library(parallel)
-library(doParallel)
 library(clusterSim)
 
 # spatial
@@ -58,6 +53,7 @@ library(ggridges)
 library(cowplot)
 library(gridExtra)
 library(ggcorrplot)
+library(GGally)
 library(ggalluvial)
 library(fmsb)
 

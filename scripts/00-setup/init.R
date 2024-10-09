@@ -1,4 +1,7 @@
-# init.R
+### ---------------------\\ 
+# Script objective:
+# Import custom functions, set seed, and set working temp directory for spatial processes 
+### ---------------------\\ 
 
 # import custom functions
 invisible(sapply(paste0(here("scripts/0-functions"), "/", list.files(here("scripts/0-functions"))), source)) 

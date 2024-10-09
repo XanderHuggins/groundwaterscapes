@@ -1,3 +1,9 @@
+### ---------------------\\ 
+# Script objective:
+# Plot bivariate maps of groundwater system functions across Earth, eco, food, mgmt  
+### ---------------------\\
+library(here); source(here(("scripts/on_button.R")))
+###
 
 # Import all data
 id_ras = terra::rast(here("data/earth_mask_5arcmin.tif"))
@@ -58,14 +64,6 @@ earth_matrix[] |> unique() |> length()
 
 ## --------------------------- \
 # Ecosystem classifications
-
-# rcl.m = c(-Inf, 0.001, 1,
-#           0.001, 0.2, 2,
-#           0.2, 0.4, 3,
-#           0.4, 0.6, 4,
-#           0.6, 0.8, 5,
-#           0.8, Inf, 6) |> 
-#   matrix(ncol = 3, byrow = TRUE)
 
 rcl.m = c(-Inf, 0.001, 1,
           0.001, 0.05, 2,
@@ -183,22 +181,3 @@ terra::writeRaster(x = matrix_stack,
                    filename = here("data/matrix_stack_altGDEclass.tif"),
                    overwrite = TRUE,
                    wopt=list(datatype="FLT8S")) # need this type to preserve all 8 digits in unique matrix ID, else trimmed to 6 sigfig
-
-## --------------------------- \
-# # identify number of unique matrix combinations
-# matrix_stack$all |> unique() |> nrow() # 120,111 unique combinations... 
-# 
-# # sanity check that writing to file preserves complete ID 
-# matrix_stack2 = rast(here("data/matrix_stack_altGDEclass.tif"))
-# matrix_stack2$all |> unique() |> nrow() # 79,177 unique combinations... 
-# freq_df = matrix_stack2[[5]] |> as.vector() |> table() |> as.data.frame() 
-# freq_df |> filter(Freq >= 1) |> nrow()
-# freq_df |> filter(Freq > 1) |> nrow()
-
-## --------------------------- \
-## old scripts below -- ignore
-
-# # determine frequency of each combination
-# freq_df = matrix_stack[[5]] |> as.vector() |> table() |> as.data.frame() 
-# freq_df |> filter(Freq >= 1) |> nrow()
-# freq_df |> filter(Freq > 1) |> nrow()

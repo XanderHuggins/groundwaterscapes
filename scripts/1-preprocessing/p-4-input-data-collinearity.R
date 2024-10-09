@@ -1,14 +1,20 @@
+### ---------------------\\ 
+# Script objective:
+# Evaluate collinearity of normalized input data layers  
+### ---------------------\\
+library(here); source(here(("scripts/on_button.R")))
+###
 
 input_data = read_rds(here("data/ds_df_full.rds")) |> dplyr::select(!c('id'))
 
-# input_data = readr::read_rds(here("data/som_files/som_derivation_data/02_full_input_data_norm.rds"))
-
+# Rename columns for plotting
 colnames = c("Water Table Ratio", "Porosity", "Terr. GDE", "Aqu. GDE", "Field size", "GW Irr.", "Gov.Eff.", "Imp. Drink. water")
 
+# Sample global dataset to reduce 
 M = cor(x = input_data |> 
           mutate(udw = -udw) |> 
           set_colnames(colnames) |>
-          slice_sample(n = 30000), 
+          slice_sample(n = 40000), 
         method = "pearson")
 round(M, 2)
 
