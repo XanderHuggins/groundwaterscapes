@@ -1,0 +1,16 @@
+on: 
+  release:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send scripts to Dataverse 
+        uses: IQSS/dataverse-uploader@v1.4
+        with:
+          DATAVERSE_TOKEN: ${{secrets.DATAVERSE_TOKEN}}
+          DATAVERSE_SERVER: https://borealisdata.ca
+          DATAVERSE_DATASET_DOI: doi:10.5683/SP3/MFYCWV
+          GITHUB_DIR: scripts
+          DELETE: False
