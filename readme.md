@@ -8,8 +8,8 @@ This repository includes all scripts necessary to preprocess input data and repr
 
 **`\Scripts` folder sub-structure**: <br/>
 - `on_button.R`: Calls the `here()` function and sources scripts in the `\00-setup` and `\0-functions` folders.
-- `\00-steup`: Loads required packages, sets package options, and configures plotting themes.
 - `\0-functions`: Contains custom functions with explanatory names.
+- `\00-steup`: Loads required packages, sets package options, and configures plotting themes.
 - `\1-preprocessing`: 
   -  Contains preprocessing scripts to harmonize data to a 5-arcminute resolution. This folder includes the subfolder `\01-spatial-harmonizattion-addnl`.
   -  Creates a raster stack of harmonized input data, normalizes the data, and checks for collinearity.
@@ -26,9 +26,9 @@ This repository includes all scripts necessary to preprocess input data and repr
 
 Additional scripts, such as for plotting, can be made available upon request.
 
-For any questions about this repository, please contact:
-Xander Huggins
-xander.huggins@ubc.ca
+For any questions about this repository, please contact: <br/>
+Xander Huggins <br/>
+xander.huggins@ubc.ca <br/>
 <br/>
 
 <p align="center">
